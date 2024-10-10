@@ -3,7 +3,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -15,7 +14,7 @@ import mongoose, { Model } from "mongoose";
 export class UsersService {
   constructor(@InjectModel(User.name) private usersModel: Model<User>) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     if (createUserDto.password !== createUserDto.passwordConfirm) {
       throw new HttpException(
         "Password and passwordConfirm don't match!",
@@ -26,16 +25,16 @@ export class UsersService {
     const createdUser = new this.usersModel(createUserDto);
 
     try {
-      //todo: this doesnt catch the err
-      return createdUser.save();
+      await createdUser.save();
     } catch (error) {
-      console.log(error);
-
       if (error.code === 11000) {
         // Mongoose duplicate key error (11000 code)
-        throw new ConflictException("User with this email already exists");
+        throw new ConflictException("User with that email already exists");
+      } else {
+        throw error;
       }
     }
+    return createdUser;
   }
 
   findAll() {
