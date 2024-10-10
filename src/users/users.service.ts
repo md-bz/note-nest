@@ -5,7 +5,7 @@ import {
   Injectable,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+// import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { User } from "./schemas/user.schema";
 import mongoose, { Model } from "mongoose";
@@ -48,11 +48,11 @@ export class UsersService {
     return this.usersModel.findById(id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return;
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return;
+  // }
 
-  remove(id: number) {
-    return;
-  }
+  // remove(id: number) {
+  //   return;
+  // }
 }
