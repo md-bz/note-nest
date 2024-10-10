@@ -11,7 +11,7 @@ export class Note {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ required: true, default: "1" })
+  @Prop({ required: true })
   user: string;
 }
 

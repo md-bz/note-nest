@@ -3,30 +3,36 @@ import { CreateNoteDto } from "./dto/create-note.dto";
 import { UpdateNoteDto } from "./dto/update-note.dto";
 import { Note } from "./schemas/note.schema";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 
 @Injectable()
 export class NotesService {
   constructor(@InjectModel(Note.name) private noteModel: Model<Note>) {}
 
-  create(createNoteDto: CreateNoteDto) {
-    const createdNote = new this.noteModel(createNoteDto);
+  create(createNoteDto: CreateNoteDto, userId: mongoose.Types.ObjectId) {
+    const createdNote = new this.noteModel({ ...createNoteDto, user: userId });
     return createdNote.save();
   }
 
-  findAll() {
-    return this.noteModel.find().exec();
+  findAll(userId: mongoose.Types.ObjectId) {
+    return this.noteModel.find({ user: userId }).exec();
   }
 
-  findOne(id: string) {
-    return this.noteModel.findById(id).exec();
+  findOne(id: string, userId: mongoose.Types.ObjectId) {
+    return this.noteModel.findOne({ user: userId, _id: id }).exec();
   }
 
-  update(id: string, updateNoteDto: UpdateNoteDto) {
-    return this.noteModel.findByIdAndUpdate(id, updateNoteDto).exec();
+  update(
+    id: string,
+    updateNoteDto: UpdateNoteDto,
+    userId: mongoose.Types.ObjectId,
+  ) {
+    return this.noteModel
+      .findOneAndUpdate({ user: userId, _id: id }, updateNoteDto)
+      .exec();
   }
 
-  remove(id: string) {
-    return this.noteModel.findByIdAndDelete(id).exec();
+  remove(id: string, userId: mongoose.Types.ObjectId) {
+    return this.noteModel.findOneAndDelete({ user: userId, _id: id }).exec();
   }
 }
