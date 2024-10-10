@@ -15,9 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { id: mongoose.Types.ObjectId }) {
-    console.log(payload);
-
     const user = await this.usersService.findOneId(payload.id);
-    return { user };
+    return user;
   }
 }
